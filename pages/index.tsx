@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Container from '@material-ui/core/Container'
+import Container from '@mui/material/Container'
 import List from '../src/components/list'
 import ClientOnly from '../src/components/clientOnly'
 

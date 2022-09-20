@@ -67,7 +67,7 @@ const List = () => {
     <div>
       <div className={styles.wrapper}>
         <div className={styles.imageContainer}>
-          <Image alt='star-wars' src="/star-wars.svg" width={300} height={300} />
+          <Image alt='star-wars' src="/assets/star-wars.svg" width={300} height={300} />
         </div>
       </div>
       <div className={styles.listContainer}>
