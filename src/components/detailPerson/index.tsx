@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLazyQuery } from '@apollo/client'
-import { Typography, CircularProgress, Box } from '@material-ui/core'
+import { Typography, CircularProgress, Box } from '@mui/material'
 
 import ModalComponent from '../modal'
 import CardInfoFilms from '../cardInfoFilms'
