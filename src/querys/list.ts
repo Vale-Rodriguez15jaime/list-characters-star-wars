@@ -15,7 +15,8 @@ export const ALL_LIST = gql`
         edited
         name
         id
-        gender
+        eyeColor
+        skinColor
         height
       }
       totalCount
