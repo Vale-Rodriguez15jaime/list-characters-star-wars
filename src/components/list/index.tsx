@@ -1,15 +1,17 @@
 import { useEffect, useState, ChangeEvent } from 'react'
 import Image from 'next/image'
 import { useLazyQuery } from '@apollo/client'
-import { Pagination, CircularProgress, Box } from '@mui/material'
+import { Pagination, CircularProgress, Box, Alert, Collapse, IconButton } from '@mui/material'
 
 import DetailPerson from '../detailPerson'
 import { ALL_LIST } from '../../querys/list'
 import styles from './list.module.sass'
 import CardUser from '../cardUser'
 import { ListInterface, ParamsInterface, PeopleInterface } from './interface'
+import Notification from "../notification";
 
 const List = () => {
+  const [showError, setShowError] = useState<boolean>(false)
   const [getList, resultList] = useLazyQuery(ALL_LIST)
   const [list, setList] = useState<ListInterface>({
     pageInfo: {
@@ -34,6 +36,9 @@ const List = () => {
     if (resultList.data) {
       const totalCount = resultList.data.allPeople.totalCount || 1
       setList({ ...resultList.data.allPeople, numberOfPages: Math.ceil(totalCount / 10) })
+    }
+    if (resultList.error) {
+      setShowError(true)
     }
   }, [resultList])
 
@@ -66,8 +71,9 @@ const List = () => {
   return (
     <div>
       <div className={styles.wrapper}>
+        <Notification open={showError} message="Error fetching list" type="error" onClose={setShowError} />
         <div className={styles.imageContainer}>
-          <Image alt='star-wars' src="/assets/star-wars.svg" width={300} height={300} />
+          <Image alt="star-wars" src="/assets/star-wars.svg" width={300} height={300} />
         </div>
       </div>
       <div className={styles.listContainer}>
