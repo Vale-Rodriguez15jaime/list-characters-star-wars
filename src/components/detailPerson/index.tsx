@@ -7,9 +7,11 @@ import CardInfoFilms from '../cardInfoFilms'
 
 import { INFO_PERSON } from '../../querys/person'
 import { DetailInterface, PersonInterface } from './interface'
+import Notification from "../notification";
 
 const DetailPerson = ({ setOpen, open, id }: DetailInterface) => {
   const [getPerson, result] = useLazyQuery(INFO_PERSON)
+  const [showError, setShowError] = useState<boolean>(false)
   const [data, setData] = useState<PersonInterface>({
     films: []
   })
@@ -24,10 +26,15 @@ const DetailPerson = ({ setOpen, open, id }: DetailInterface) => {
     if (result.data && result.data.person) {
       setData(result.data.person.filmConnection)
     }
+    if (result.error) {
+      setShowError(true)
+      setOpen(!open)
+    }
   }, [result])
 
   return (
     <div>
+      <Notification open={showError} message="Error fetching information of films" type="error" onClose={setShowError} />
       <ModalComponent setOpen={setOpen} open={open}>
         <>
           <Typography
