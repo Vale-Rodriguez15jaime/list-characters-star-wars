@@ -1,7 +1,7 @@
 import { Button, Card, CardActions, CardContent, Typography } from '@mui/material'
 import RemoveRedEyeTwoToneIcon from '@mui/icons-material/RemoveRedEyeTwoTone'
 
-import { capitalizeFirstLetter } from '../../utils'
+import { capitalizeFirstLetter } from '../../tools/utils'
 import { CardUserProps } from './interface'
 
 const CardUser = ({ user, onOpen }: CardUserProps) => {
