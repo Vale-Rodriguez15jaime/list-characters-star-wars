@@ -62,12 +62,29 @@ jobs:
           echo "$(git show -s)"
       - name: Print head git pull request head sha
         run: |
-          echo "$(github.event.pull_request.head.sha)"
+          echo "$(github.event.pull_request.head)"
       - name: Print head git github.sha
         run: |
-          echo ${{ github.sha }}
           echo "$(github.sha)"
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+      - name: get the SHA MERGED or not
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.commits[].id' | tail -2 | head -1 |sed 's/\"//g'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+
+  getPullRequestMerged:
+    runs-on: ubuntu-18.04
+    if: ${{ github.event.pull_request.merged == true }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: get the sha merged
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.commits[].id' | tail -2 | head -1 |sed 's/\"//g'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+      
+
