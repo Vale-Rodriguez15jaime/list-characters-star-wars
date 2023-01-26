@@ -80,14 +80,14 @@ jobs:
           echo "$GITHUB_CONTEXT"| jq '.event'
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
+      - name: get the SHA CLOSED 1.2
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.sha'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
       - name: get the SHA CLOSED 1
         run: |
           echo "$GITHUB_CONTEXT"| jq '.event.commits[].sha' | tail -2 | head -1 |sed 's/\"//g'
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-      - name: get the SHA CLOSED 3.3
-        run: |
-          echo "$GITHUB_CONTEXT"| jq '.event.commits[].id'
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
       - name: get the SHA CLOSED 4
