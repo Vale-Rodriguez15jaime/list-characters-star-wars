@@ -34,7 +34,6 @@ jobs:
   #         path: dist
 
   deploy:
-    needs: [ lint, build ]
     runs-on: ubuntu-18.04
     if: ${{ github.event_name == 'push' }}
     steps:
