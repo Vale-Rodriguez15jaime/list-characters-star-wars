@@ -5,7 +5,7 @@ on:
     branches: [develop]
   pull_request:
     branches: [develop]
-    types: [opened, synchronize]
+    types: [opened, synchronize, closed]
 
 jobs:
   avoid_reduncy:
