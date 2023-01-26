@@ -51,7 +51,8 @@ jobs:
     runs-on: ubuntu-18.04          
     if: ${{ github.event_name == 'pull_request' }}
     steps:
-      - uses: actions/checkout@v3 
+      - uses: actions/checkout@v3
+      - run: git log --oneline
       - uses: tzzs/server-shell@v3
         with:
           PRIVATE_KEY: ${{ secrets.KEY_AWS }}
@@ -59,5 +60,5 @@ jobs:
           IP: ${{secrets.IP_SERVER}}
           PORT: ${{secrets.PORT_SERVER}}
           SHELL: |
-            "git log --oneline"
+            ""
 
