@@ -49,20 +49,12 @@ jobs:
 
   deployPullRequest:
     runs-on: ubuntu-18.04          
-    if: ${{ github.event_name == 'pull_request' }}
+    # if: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@v3
-      - run: git log --oneline
-      # - uses: tzzs/server-shell@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Print head git commit message
         run: |
           echo "$(git show -s --format=%s)"
           echo ${{ github.event.pull_request.head.sha }}
-
-          # PRIVATE_KEY: ${{ secrets.KEY_AWS }}
-          # USERNAME: ${{secrets.USERNAME_SERVER}}
-          # IP: ${{secrets.IP_SERVER}}
-          # PORT: ${{secrets.PORT_SERVER}}
-
