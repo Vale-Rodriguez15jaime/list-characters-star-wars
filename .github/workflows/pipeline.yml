@@ -1,8 +1,6 @@
 name: Pipeline
 
 on:
-  push:
-    branches: [develop]
   pull_request:
     branches: [develop]
     types: [opened, synchronize]
@@ -16,35 +14,51 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-  build:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v3
-        with:
-          cache: 'npm'
-          node-version: '16.17.0'
-      - name: Install dependencies
-        run: npm ci
-      - name: Build
-        run: npm run build
-      - uses: actions/upload-artifact@v2
-        with:
-          name: dist
-          path: dist
-
+  # build:
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         cache: 'npm'
+  #         node-version: '16.17.0'
+  #     - name: Install dependencies
+  #       run: npm ci
+  #     - name: Build
+  #       run: npm run build
+  #     - uses: actions/upload-artifact@v2
+  #       with:
+  #         name: dist
+  #         path: dist
 
   deploy:
-    needs: [build]
+    needs: [ lint, build ]
     runs-on: ubuntu-18.04
     if: ${{ github.event_name == 'push' }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
+      - uses: actions/checkout@v3 
+      - uses: tzzs/server-shell@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          PRIVATE_KEY: ${{ secrets.KEY_AWS }}
+          USERNAME: ${{secrets.USERNAME_SERVER}}
+          IP: ${{secrets.IP_SERVER}}
+          PORT: ${{secrets.PORT_SERVER}}
+          SHELL: |
+            "sh /home/ubuntu/list-characters-star-wars/deploy.sh $GITHUB_SHA"
+
+  deployPullRequest:
+    runs-on: ubuntu-18.04          
+    if: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v3 
+      - uses: tzzs/server-shell@v3
+        with:
+          PRIVATE_KEY: ${{ secrets.KEY_AWS }}
+          USERNAME: ${{secrets.USERNAME_SERVER}}
+          IP: ${{secrets.IP_SERVER}}
+          PORT: ${{secrets.PORT_SERVER}}
+          SHELL: |
+            "git log --oneline"
+
