@@ -1,6 +1,8 @@
 name: Pipeline
 
 on:
+  push:
+    branches: [develop]
   pull_request:
     branches: [develop]
     types: [opened, synchronize]
@@ -34,7 +36,6 @@ jobs:
   #         path: dist
 
   deploy:
-    needs: [ lint, build ]
     runs-on: ubuntu-18.04
     if: ${{ github.event_name == 'push' }}
     steps:
@@ -45,20 +46,28 @@ jobs:
           USERNAME: ${{secrets.USERNAME_SERVER}}
           IP: ${{secrets.IP_SERVER}}
           PORT: ${{secrets.PORT_SERVER}}
-          SHELL: |
-            "sh /home/ubuntu/list-characters-star-wars/deploy.sh $GITHUB_SHA"
 
   deployPullRequest:
     runs-on: ubuntu-18.04          
-    if: ${{ github.event_name == 'pull_request' }}
+    # if: ${{ github.event_name == 'pull_request' }}
     steps:
-      - uses: actions/checkout@v3 
-      - uses: tzzs/server-shell@v3
+      - uses: actions/checkout@v3
         with:
-          PRIVATE_KEY: ${{ secrets.KEY_AWS }}
-          USERNAME: ${{secrets.USERNAME_SERVER}}
-          IP: ${{secrets.IP_SERVER}}
-          PORT: ${{secrets.PORT_SERVER}}
-          SHELL: |
-            "git log --oneline"
-
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Print head git commit message
+        run: |
+          echo "$(git show -s --format=%s)"
+      - name: Print head git show -s
+        run: |
+          echo "$(git show -s)"
+      - name: Print head git pull request head sha
+        run: |
+          echo "$(github.event.pull_request.head.sha)"
+      - name: Print head git github.sha
+        run: |
+          echo ${{ github.sha }}
+          echo "$(github.sha)"
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
