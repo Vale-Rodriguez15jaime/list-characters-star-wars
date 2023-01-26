@@ -53,7 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - run: git log --oneline
-      - uses: tzzs/server-shell@v3
+      # - uses: tzzs/server-shell@v3
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Print head git commit message
