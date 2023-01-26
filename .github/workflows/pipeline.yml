@@ -70,9 +70,29 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
-      - name: get the SHA MERGED or not
+      - name: get the SHA MERGED
         run: |
           echo "$GITHUB_CONTEXT"| jq '.event.commits[].id' | tail -2 | head -1 |sed 's/\"//g'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+      - name: get the SHA CLOSED 1
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.commits[].sha' | tail -2 | head -1 |sed 's/\"//g'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+      - name: get the SHA CLOSED 2
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.commits[].sha' | tail -2 's/\"//g'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+      - name: get the SHA CLOSED 3
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.commits[].sha' 's/\"//g'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+      - name: get the SHA CLOSED 4
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.commits[].sha'
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
 
