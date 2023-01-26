@@ -59,6 +59,4 @@ jobs:
           USERNAME: ${{secrets.USERNAME_SERVER}}
           IP: ${{secrets.IP_SERVER}}
           PORT: ${{secrets.PORT_SERVER}}
-          SHELL: |
-            ""
 
