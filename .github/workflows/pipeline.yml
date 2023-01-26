@@ -75,34 +75,19 @@ jobs:
           echo "$GITHUB_CONTEXT"| jq '.event.commits[].id' | tail -2 | head -1 |sed 's/\"//g'
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-      - name: get the SHA CLOSED 1.1
-        run: |
-          echo "$GITHUB_CONTEXT"| jq '.event'
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-      - name: get the SHA CLOSED 1.2
+      - name: get STATUS PULLREQUEST 1
         run: |
           echo "$GITHUB_CONTEXT"| jq '.event.pull_request'
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-      - name: get the SHA CLOSED 1.3
+      - name: get STATUS PULLREQUEST action 2
         run: |
-          echo "$GITHUB_CONTEXT"| jq '.event.pull_request.head'
+          echo "$GITHUB_CONTEXT"| jq '.event.action'
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
       - name: get the SHA CLOSED 1.4
         run: |
           echo "$GITHUB_CONTEXT"| jq '.event.pull_request.head.sha'
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-      - name: get the SHA CLOSED 1
-        run: |
-          echo "$GITHUB_CONTEXT"| jq '.event.commits[].sha' | tail -2 | head -1 |sed 's/\"//g'
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-      - name: get the SHA CLOSED 4
-        run: |
-          echo "$GITHUB_CONTEXT"| jq '.event.commits[].sha'
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
 
