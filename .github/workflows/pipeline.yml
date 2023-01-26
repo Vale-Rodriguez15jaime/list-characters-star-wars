@@ -55,8 +55,14 @@ jobs:
       - run: git log --oneline
       - uses: tzzs/server-shell@v3
         with:
-          PRIVATE_KEY: ${{ secrets.KEY_AWS }}
-          USERNAME: ${{secrets.USERNAME_SERVER}}
-          IP: ${{secrets.IP_SERVER}}
-          PORT: ${{secrets.PORT_SERVER}}
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Print head git commit message
+        run: |
+          echo "$(git show -s --format=%s)"
+          echo ${{ github.event.pull_request.head.sha }}
+
+          # PRIVATE_KEY: ${{ secrets.KEY_AWS }}
+          # USERNAME: ${{secrets.USERNAME_SERVER}}
+          # IP: ${{secrets.IP_SERVER}}
+          # PORT: ${{secrets.PORT_SERVER}}
 
