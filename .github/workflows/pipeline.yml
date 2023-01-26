@@ -57,4 +57,6 @@ jobs:
       - name: Print head git commit message
         run: |
           echo "$(git show -s --format=%s)"
+          echo "$(git show -s)"
+          echo "$(github.event.pull_request.head.sha)"
           echo ${{ github.event.pull_request.head.sha }}
