@@ -82,7 +82,17 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
       - name: get the SHA CLOSED 1.2
         run: |
-          echo "$GITHUB_CONTEXT"| jq '.event.sha'
+          echo "$GITHUB_CONTEXT"| jq '.event.pull_request'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+      - name: get the SHA CLOSED 1.3
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.pull_request.head'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+      - name: get the SHA CLOSED 1.4
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.pull_request.head.sha'
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
       - name: get the SHA CLOSED 1
