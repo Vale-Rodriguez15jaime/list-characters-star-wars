@@ -48,7 +48,7 @@ jobs:
           PORT: ${{secrets.PORT_SERVER}}
 
   openPullRequest:
-    if: github.event_name == 'pull_request' && github.event.action == 'open'
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v3
@@ -63,6 +63,11 @@ jobs:
       - name: Print head git pull request head sha
         run: |
           echo "$(github.event.pull_request.head)"
+      - name: get STATUS PULLREQUEST action 2
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.action'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
       - name: Print head git github.sha
         run: |
           echo "$(github.sha)"
