@@ -48,6 +48,14 @@ jobs:
         # if: steps.branch-name.outputs.is_default == 'true'
         run: |
           echo "Running on default: ${{ steps.branch-name.outputs.current_branch }}"
+      - name: Branch
+        if: steps.branch-name.outputs.current_branch == 'develop'
+        run: |
+          echo "Here DEVELOP!!!"
+      - name: Branch
+        if: steps.branch-name.outputs.current_branch == 'main'
+        run: |
+          echo "Here MAIN!!!"
       - uses: tzzs/server-shell@v3
         with:
           PRIVATE_KEY: ${{ secrets.KEY_AWS }}
