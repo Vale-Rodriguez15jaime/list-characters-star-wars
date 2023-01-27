@@ -49,7 +49,7 @@ jobs:
 
   deployPullRequest:
     runs-on: ubuntu-18.04          
-    # if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -87,10 +87,8 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
 
   pullRequestClosed:
-    runs-on: ubuntu-18.04          
-    if: |
-      ${{ github.event_name == 'pull_request' }} &&
-       ${{ github.event.action == 'closed' }}
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == false
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v3
         with:
@@ -107,8 +105,8 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
 
   getPullRequestMerged:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     runs-on: ubuntu-18.04
-    if: github.event_name == 'pull_request' && (github.event.pull_request.merged == true || github.event.pull_request.merged)
     steps:
       - uses: actions/checkout@v3
       - name: get the sha merged
