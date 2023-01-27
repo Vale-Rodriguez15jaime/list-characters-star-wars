@@ -47,9 +47,9 @@ jobs:
           IP: ${{secrets.IP_SERVER}}
           PORT: ${{secrets.PORT_SERVER}}
 
-  deployPullRequest:
-    runs-on: ubuntu-18.04          
-    if: ${{ github.event_name == 'pull_request' }}
+  openPullRequest:
+    if: github.event_name == 'pull_request' && github.event.action == 'open'
+    runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v3
         with:
@@ -70,16 +70,16 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
-      - name: get the SHA MERGED
-        run: |
-          echo "$GITHUB_CONTEXT"| jq '.event.commits[].id' | tail -2 | head -1 |sed 's/\"//g'
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-      - name: get STATUS PULLREQUEST action 2
-        run: |
-          echo "$GITHUB_CONTEXT"| jq '.event.action'
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
+      # - name: get the SHA MERGED
+      #   run: |
+      #     echo "$GITHUB_CONTEXT"| jq '.event.commits[].id' | tail -2 | head -1 |sed 's/\"//g'
+      #   env:
+      #     GITHUB_CONTEXT: ${{ toJson(github) }}
+      # - name: get STATUS PULLREQUEST action 2
+      #   run: |
+      #     echo "$GITHUB_CONTEXT"| jq '.event.action'
+      #   env:
+      #     GITHUB_CONTEXT: ${{ toJson(github) }}
       - name: get the SHA CLOSED 1.4
         run: |
           echo "$GITHUB_CONTEXT"| jq '.event.pull_request.head.sha'
@@ -87,7 +87,7 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
 
   pullRequestClosed:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == false
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v3
@@ -104,15 +104,15 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
 
-  getPullRequestMerged:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v3
-      - name: get the sha merged
-        run: |
-          echo "$GITHUB_CONTEXT"| jq '.event.commits[].id' | tail -2 | head -1 |sed 's/\"//g'
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
+  # getPullRequestMerged:
+  #   if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+  #   runs-on: ubuntu-18.04
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: get the sha merged
+  #       run: |
+  #         echo "$GITHUB_CONTEXT"| jq '.event.commits[].id' | tail -2 | head -1 |sed 's/\"//g'
+  #       env:
+  #         GITHUB_CONTEXT: ${{ toJson(github) }}
       
 
