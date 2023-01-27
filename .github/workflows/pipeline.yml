@@ -48,7 +48,7 @@ jobs:
           PORT: ${{secrets.PORT_SERVER}}
 
   openPullRequest:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v3
