@@ -75,11 +75,26 @@ jobs:
           echo "$GITHUB_CONTEXT"| jq '.event.commits[].id' | tail -2 | head -1 |sed 's/\"//g'
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
-      - name: get STATUS PULLREQUEST 1
+      - name: get STATUS PULLREQUEST action 2
         run: |
-          echo "$GITHUB_CONTEXT"| jq '.event.pull_request'
+          echo "$GITHUB_CONTEXT"| jq '.event.action'
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
+      - name: get the SHA CLOSED 1.4
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.pull_request.head.sha'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+
+  pullRequestClosed:
+    runs-on: ubuntu-18.04          
+    if: |
+      ${{ github.event_name == 'pull_request' }} &&
+       ${{ github.event.action == 'closed' }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: get STATUS PULLREQUEST action 2
         run: |
           echo "$GITHUB_CONTEXT"| jq '.event.action'
@@ -93,7 +108,7 @@ jobs:
 
   getPullRequestMerged:
     runs-on: ubuntu-18.04
-    if: ${{ github.event.pull_request.merged == true }}
+    if: github.event_name == 'pull_request' && (github.event.pull_request.merged == true || github.event.pull_request.merged)
     steps:
       - uses: actions/checkout@v3
       - name: get the sha merged
