@@ -45,7 +45,7 @@ jobs:
         uses: tj-actions/branch-names@v6
         
       - name: Running on the default branch.
-        if: steps.branch-name.outputs.is_default == 'true'
+        # if: steps.branch-name.outputs.is_default == 'true'
         run: |
           echo "Running on default: ${{ steps.branch-name.outputs.current_branch }}"
       - uses: tzzs/server-shell@v3
