@@ -91,6 +91,19 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
 
+  synchronizedPullRequest:
+    if: github.event_name == 'pull_request' && github.event.action == 'open'
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: get the SHA CLOSED 1.4
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.pull_request.head.sha'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+
   pullRequestClosed:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-18.04
