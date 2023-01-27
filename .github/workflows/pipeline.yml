@@ -2,9 +2,9 @@ name: Pipeline
 
 on:
   push:
-    branches: [develop]
+    branches: [develop, main]
   pull_request:
-    branches: [develop]
+    branches: [develop, main]
     types: [opened, synchronize, closed]
 
 jobs:
@@ -77,6 +77,10 @@ jobs:
       - name: show branch-name
         run: |
           echo "Running on default: ${{ steps.branch-name.outputs.current_branch }}"
+      - name: branch to prod
+        if: steps.branch-name.outputs.current_branch == 'develop'
+        run: |
+          echo "Pull request Open develop to main"
       - name: Print head git commit message
         run: |
           echo "$(git show -s --format=%s)"

@@ -11,11 +11,7 @@ const CardUser = ({ user, onOpen }: CardUserProps) => {
         backgroundColor: '#252836',
         color: 'white',
         borderRadius: '10px',
-<<<<<<< HEAD
         padding: '1.2rem'
-=======
-        padding: '1rem'
->>>>>>> main
       }}
     >
       <CardContent>
