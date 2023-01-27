@@ -1,9 +1,11 @@
 name: Pipeline
 
 on:
+  push:
+    branches: [develop]
   pull_request:
     branches: [develop]
-    types: [opened, synchronize]
+    types: [opened, synchronize, closed]
 
 jobs:
   avoid_reduncy:
@@ -34,31 +36,124 @@ jobs:
   #         path: dist
 
   deploy:
-    needs: [ lint, build ]
     runs-on: ubuntu-18.04
     if: ${{ github.event_name == 'push' }}
     steps:
-      - uses: actions/checkout@v3 
+      - uses: actions/checkout@v3
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+        
+      - name: Running on the default branch.
+        # if: steps.branch-name.outputs.is_default == 'true'
+        run: |
+          echo "Running on default: ${{ steps.branch-name.outputs.current_branch }}"
+      - name: Branch
+        if: steps.branch-name.outputs.current_branch == 'develop'
+        run: |
+          echo "Here DEVELOP!!!"
+      - name: Branch
+        if: steps.branch-name.outputs.current_branch == 'main'
+        run: |
+          echo "Here MAIN!!!"
       - uses: tzzs/server-shell@v3
         with:
           PRIVATE_KEY: ${{ secrets.KEY_AWS }}
           USERNAME: ${{secrets.USERNAME_SERVER}}
           IP: ${{secrets.IP_SERVER}}
           PORT: ${{secrets.PORT_SERVER}}
-          SHELL: |
-            "sh /home/ubuntu/list-characters-star-wars/deploy.sh $GITHUB_SHA"
 
-  deployPullRequest:
-    runs-on: ubuntu-18.04          
-    if: ${{ github.event_name == 'pull_request' }}
+
+  openPullRequest:
+    if: github.event_name == 'pull_request' && github.event.action != 'closed' && github.event.action != 'synchronize'
+    runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v3 
-      - uses: tzzs/server-shell@v3
+      - uses: actions/checkout@v3
         with:
-          PRIVATE_KEY: ${{ secrets.KEY_AWS }}
-          USERNAME: ${{secrets.USERNAME_SERVER}}
-          IP: ${{secrets.IP_SERVER}}
-          PORT: ${{secrets.PORT_SERVER}}
-          SHELL: |
-            "git log --oneline"
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Get branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+      - name: show branch-name
+        run: |
+          echo "Running on default: ${{ steps.branch-name.outputs.current_branch }}"
+      - name: Print head git commit message
+        run: |
+          echo "$(git show -s --format=%s)"
+      - name: Print head git show -s
+        run: |
+          echo "$(git show -s)"
+      - name: Print head git pull request head sha
+        run: |
+          echo "$(github.event.pull_request.head)"
+      - name: get STATUS PULLREQUEST action 2
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.action'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+      - name: Print head git github.sha
+        run: |
+          echo "$(github.sha)"
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      # - name: get the SHA MERGED
+      #   run: |
+      #     echo "$GITHUB_CONTEXT"| jq '.event.commits[].id' | tail -2 | head -1 |sed 's/\"//g'
+      #   env:
+      #     GITHUB_CONTEXT: ${{ toJson(github) }}
+      # - name: get STATUS PULLREQUEST action 2
+      #   run: |
+      #     echo "$GITHUB_CONTEXT"| jq '.event.action'
+      #   env:
+      #     GITHUB_CONTEXT: ${{ toJson(github) }}
+      - name: get the SHA CLOSED 1.4
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.pull_request.head.sha'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+
+  synchronizedPullRequest:
+    if: github.event_name == 'pull_request' && github.event.action == 'synchronize'
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: get the SHA CLOSED 1.4
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.pull_request.head.sha'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+
+  pullRequestClosed:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: get STATUS PULLREQUEST action 2
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.action'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+      - name: get the SHA CLOSED 1.4
+        run: |
+          echo "$GITHUB_CONTEXT"| jq '.event.pull_request.head.sha'
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+
+  # getPullRequestMerged:
+  #   if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+  #   runs-on: ubuntu-18.04
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: get the sha merged
+  #       run: |
+  #         echo "$GITHUB_CONTEXT"| jq '.event.commits[].id' | tail -2 | head -1 |sed 's/\"//g'
+  #       env:
+  #         GITHUB_CONTEXT: ${{ toJson(github) }}
+      
 
