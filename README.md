@@ -22,3 +22,5 @@ npm run
 - Reactjs
 - Typescript
 - Apollo-Client/Graphql
+
+link: https://star-wars-test-val.netlify.app/
